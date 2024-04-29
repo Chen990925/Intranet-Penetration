@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 /**
- * 缓存类模板
+ * 读取yml配置文件
  * @author: chenjunlin
  * @date: 2024/4/25
  */
