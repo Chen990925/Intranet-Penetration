@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<!--定义了三个属性，分别是 LOG_FILE、LOG_PATTERN 和 ENCODE。
+    LOG_FILE 指定了日志文件的路径为 /work/project/neutrino-proxy/server.log。
+    LOG_PATTERN 指定了日志的输出格式，其中 %d{yyyy-MM-dd HH:mm:ss.SSS} 表示日期时间，%contextName 表示日志记录器的名称，
+    %thread 表示线程名，%-5level 表示日志级别，%logger{50} 表示日志记录器名称的缩写，%msg%n 表示日志消息和换行符。
+    ENCODE 指定了日志的字符编码为 utf8。-->
+    <property name="LOG_FILE" value="/work/project/neutrino-proxy/server.log"/>
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{50} - %msg%n"/>
+    <property name="ENCODE" value="utf8"/>
+
+<!--定义了两个日志输出目标，一个是控制台输出（console），一个是文件输出（file）。
+    console 输出级别为 DEBUG，只输出级别大于等于 DEBUG 的日志信息。-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>${ENCODE}</charset>
+        </encoder>
+    </appender>
+
+<!-- file 输出到指定的文件路径 ${LOG_FILE}，并按照日期进行日志文件滚动，保留最近 7 天的日志文件-->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+    <!--配置了日志文件滚动策略，使用 TimeBasedRollingPolicy，即基于时间的滚动策略。
+        fileNamePattern 指定了滚动后的文件名格式，${LOG_FILE}.%d{yyyy-MM-dd}.zip 表示按日期命名，同时进行压缩。
+        maxHistory 指定了保留的历史日志文件数量为 7，即保留最近 7 天的日志文件-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>${ENCODE}</charset>
+        </encoder>
+    </appender>
+
+<!--根日志记录器配置，指定了根日志级别为 DEBUG，并引用了两个日志输出目标 console 和 file-->
+    <root level="DEBUG">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </root>
+
+<!--配置了两个特定的日志记录器，分别是 com.example.logback 和 io.netty。
+    com.example.logback 的日志级别为 WARN，表示只输出级别大于等于 WARN 的日志信息。
+    io.netty 的日志级别也为 WARN，表示只输出级别大于等于 WARN 的日志信息-->
+    <logger name="com.example.logback" level="warn"/>
+    <logger name="io.netty" level="warn"/>
+</configuration>

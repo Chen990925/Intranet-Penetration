@@ -1,0 +1,40 @@
+application:
+#  指定了应用程序的名称为 neutrino-proxy-server
+  name: neutrino-proxy-server
+
+proxy:
+#  定义了协议相关的参数
+  protocol:
+#    设置了最大帧长度为 2097152 字节，用于解决粘包和拆包问题
+    max-frame-length: 2097152
+    #设置了长度字段的偏移量为 0，表示长度字段相对于帧起始位置的偏移量
+    length-field-offset: 0
+    #length-field-length: 4：设置了长度字段的长度为 4 字节，表示长度字段的字节数。
+    length-field-length: 4
+    #initial-bytes-to-strip: 0：设置了初始字节忽略量为 0，表示在解码时跳过的字节数。
+    initial-bytes-to-strip: 0
+    #length-adjustment: 0：设置了长度调整值为 0，用于调整消息长度。
+    length-adjustment: 0
+    #read-idle-time: 60：设置了读空闲时间为 60 秒，表示如果在指定时间内没有读取到数据，则认为连接处于读空闲状态。
+    read-idle-time: 60
+    #write-idle-time: 40：设置了写空闲时间为 40 秒，表示如果在指定时间内没有写入数据，则认为连接处于写空闲状态。
+    write-idle-time: 40
+    #all-idle-time-seconds: 0：设置了所有类型空闲时间为 0 秒，表示如果在指定时间内既没有读取也没有写入数据，则认为连接处于所有类型空闲状态
+    all-idle-time-seconds: 0
+  server:
+#    指定了服务器的端口号为 9000
+    port: 9000
+#    指定了 SSL 加密通信的端口号为 9002
+    ssl-port: 9002
+#    指定了密钥库密码为 123456，用于访问密钥库
+    key-store-password: 123456
+#    指定了密钥管理器密码为 123456，用于访问密钥管理器
+    key-manager-password: 123456
+#    指定了密钥库文件的路径为 classpath 下的 test.jks 文件
+    jks-path: classpath:/test.jks
+#    定义了许可证相关的参数，每一行表示一个许可证的信息
+  license:
+#    许可证 79419a1a8691413aa5e845b9e3e90051 的数量为 3
+    79419a1a8691413aa5e845b9e3e90051: 3
+#    许可证 9352b1c25f564c81a5677131d7769876 的数量为 2
+    9352b1c25f564c81a5677131d7769876: 2
