@@ -38,7 +38,6 @@ public abstract class AbstractConfigurationParser implements ConfigurationParser
 		if (null != configuration && StringUtils.isNotEmpty(configuration.file())) {
 			fileName = configuration.file();
 		}
-
 		try {
 			InputStream in = FileUtil.getInputStream(MetaDataConstant.CLASSPATH_RESOURCE_IDENTIFIER.concat("/").concat(fileName));
 			return parse(in, clazz);
@@ -55,6 +54,7 @@ public abstract class AbstractConfigurationParser implements ConfigurationParser
 	private  <T> T parseProxy(Map<String, Object> config, Class<?> clazz) throws ConfigurationParserException {
 		T instance = null;
 		try {
+			//尝试使用反射创建目标类的实例
 			instance = (T)clazz.newInstance();
 		} catch (InstantiationException e) {
 			throw new ConfigurationParserException(String.format("无法实例化类：%s", clazz.getName()));
@@ -63,6 +63,7 @@ public abstract class AbstractConfigurationParser implements ConfigurationParser
 		}
 
 		String prefix = "";
+		//根据目标类上的 @Configuration 注解获取配置项的前缀（如果有的话）
 		Configuration configuration = clazz.getAnnotation(Configuration.class);
 		if (null != configuration) {
 			prefix = configuration.prefix();
@@ -81,26 +82,29 @@ public abstract class AbstractConfigurationParser implements ConfigurationParser
 				}
 			}
 		}
-
+		//使用反射获取目标类的所有字段
 		Set<Field> fields = ReflectUtil.getInheritChainDeclaredFieldSet(clazz);
 		if (CollectionUtil.isEmpty(fields)) {
 			return instance;
 		}
 		for (Field field : fields) {
 			String key = field.getName();
+			//检查字段上是否有 @Value 注解，如果有，获取注解的值作为配置项的键
 			Value value = field.getAnnotation(Value.class);
 			if (null != value && StringUtil.notEmpty(value.value())) {
 				key = value.value();
 			}
+			//从配置项的 Map 中获取与字段对应的值，并使用反射设置字段的值
 			boolean success = ReflectUtil.setFieldValue(field, instance, config.get(key));
 			if (!success) {
 				try {
+					//设置字段值失败，则尝试递归调用 parseProxy 方法，以字段的类型和对应的配置项作为参数，尝试解析字段的复杂类型
 					Object o = parseProxy((Map)config.get(key), field.getType());
 					if (null != o) {
 						ReflectUtil.setFieldValue(field, instance, o);
 					}
-				} catch (Exception e) {
-					// ignore
+					//解析失败，忽略异常继续遍历下一个字
+				} catch (Exception ignored) {
 				}
 			}
 		}
