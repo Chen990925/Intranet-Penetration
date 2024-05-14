@@ -5,8 +5,8 @@ import org.junit.Test;
 
 /**
  *
- * @author: chenjunlin
- * @date: 2024/5/14
+ * @author: wen.y
+ * @date: 2022/6/24
  */
 public class Test1 {
 
@@ -21,4 +21,17 @@ public class Test1 {
 		Dog dog = Aop.get(Dog.class);
 		System.out.println(dog.say("hello"));
 	}
+
+	@Test
+	public void catClimb() {
+		Cat cat = Aop.get(Cat.class);
+		cat.climb();
+	}
+
+	@Test
+	public void catCalc() {
+		Cat cat = Aop.get(Cat.class);
+		System.out.println(cat.calc(10, 6));
+	}
+
 }

@@ -3,10 +3,10 @@ package fun.asgc.neutrino.core.aop;
 
 /**
  *
- * @author: chenjunlin
+ * @author: wen.y
  * @date: 2022/6/23
  */
-@Intercept({DogInterceptor.class})
+@Intercept({TestInterceptor.class, TestInterceptor2.class})
 public class Dog {
 	public Dog() {
 		System.out.println("狗出生");
