@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  *
  * @author:  chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 @Slf4j
 public class GlobalInterceptor implements Interceptor {

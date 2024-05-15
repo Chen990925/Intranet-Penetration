@@ -6,7 +6,7 @@ import fun.asgc.neutrino.core.aop.interceptor.InnerGlobalInterceptor;
 /**
  *
  * @author:  chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 public class Panda {
 

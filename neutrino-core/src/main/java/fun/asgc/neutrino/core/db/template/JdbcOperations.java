@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  *
  * @author: chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 public class JdbcOperations {
     private static final JdbcOperations instance = new JdbcOperations();
@@ -59,7 +59,7 @@ public class JdbcOperations {
                 try{
                     res =  ps.executeUpdate();
                 }catch(SQLException e){
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
                 return res;
             }
@@ -193,7 +193,7 @@ public class JdbcOperations {
                     }
 
                 }catch(Exception e){
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
 
                 return res;

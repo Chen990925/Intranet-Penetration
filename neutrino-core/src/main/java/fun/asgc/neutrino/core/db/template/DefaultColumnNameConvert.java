@@ -8,7 +8,7 @@ import fun.asgc.neutrino.core.util.StringUtil;
  * 默认的列名转换器转换器
  * 代码 -> DB
  * @author: chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 public class DefaultColumnNameConvert implements Convert<String, String> {
     private static final DefaultColumnNameConvert instance = new DefaultColumnNameConvert();

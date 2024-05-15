@@ -11,21 +11,24 @@ import java.util.Map;
 /**
  *
  * @author: chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 public class JdbcTemplate {
-
     /**
-     * 数据源
+     * 数据源持有者
      */
-    private DataSource dataSource;
+    private DataSourceHolder dataSourceHolder;
     /**
      * jdbc操作
      */
     private JdbcOperations jdbcOperations;
 
     public JdbcTemplate(DataSource dataSource) {
-        this.dataSource = dataSource;
+        this(new DataSourceHolder(dataSource));
+    }
+
+    public JdbcTemplate(DataSourceHolder dataSourceHolder) {
+        this.dataSourceHolder = dataSourceHolder;
         this.jdbcOperations = JdbcOperations.getInstance();
     }
 
@@ -34,23 +37,31 @@ public class JdbcTemplate {
         Connection conn = null;
 
         try {
-            conn = dataSource.getConnection();
+            conn = dataSourceHolder.getConnection();
             res = jdbcOperations.executeUpdate(conn,sql, params);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                dataSourceHolder.tryClose(conn);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return res;
     }
 
+    public int update(SqlAndParams sqlAndParams) {
+        return update(sqlAndParams.getSql(), sqlAndParams.getParamArray());
+    }
+
     public int updateByMap(String sql, Map<String,Object> params){
-        SqlAndParams sqlAndParams = new SqlAndParams(sql, params);
-        return update(sqlAndParams.getSql(),sqlAndParams.getParamArray());
+        return update(new SqlAndParams(sql, params));
     }
 
     public int updateByModel(String sql, Object model){
-        SqlAndParams sqlAndParams = new SqlAndParams(sql, model);
-        return update(sqlAndParams.getSql(),sqlAndParams.getParamArray());
+        return update(new SqlAndParams(sql, model));
     }
 
     public <T> T query(Class<T> clazz, String sql, Object ...params){
@@ -58,23 +69,31 @@ public class JdbcTemplate {
         Connection conn = null;
 
         try {
-            conn = dataSource.getConnection();
-            res = jdbcOperations.executeQuery(conn,clazz,sql, params);
+            conn = dataSourceHolder.getConnection();
+            res = jdbcOperations.executeQuery(conn, clazz,sql, params);
         } catch (SQLException e) {
             new RuntimeException(e);
+        } finally {
+            try {
+                dataSourceHolder.tryClose(conn);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return res;
     }
 
+    public <T> T query(Class<T> clazz, SqlAndParams sqlAndParams) {
+        return query(clazz, sqlAndParams.getSql(), sqlAndParams.getParamArray());
+    }
+
     public <T> T queryByMap(Class<T> clazz, String sql, Map<String,Object> params){
-        SqlAndParams sqlAndParams = new SqlAndParams(sql, params);
-        return query(clazz,sqlAndParams.getSql(), sqlAndParams.getParamArray());
+        return query(clazz, new SqlAndParams(sql, params));
     }
 
     public <T> T queryByModel(Class<T> clazz, String sql, Object model){
-        SqlAndParams sqlAndParams = new SqlAndParams(sql, model);
-        return query(clazz, sqlAndParams.getSql(), sqlAndParams.getParamArray());
+        return query(clazz, new SqlAndParams(sql, model));
     }
 
     public byte queryForByteByMap(String sql, Map<String,Object> params){
@@ -222,13 +241,23 @@ public class JdbcTemplate {
         Connection conn = null;
 
         try {
-            conn = dataSource.getConnection();
+            conn = dataSourceHolder.getConnection();
             res = jdbcOperations.executeQueryForList(conn, clazz, sql, params);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                dataSourceHolder.tryClose(conn);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return res;
+    }
+
+    public <T> List<T> queryForList(Class<T> clazz, SqlAndParams sqlAndParams) {
+        return queryForList(clazz, sqlAndParams.getSql(), sqlAndParams.getParamArray());
     }
 
     public <T> List<T> queryForListByMap(Class<T> clazz, String sql, Map<String,Object> params){

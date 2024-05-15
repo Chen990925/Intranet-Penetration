@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  *
  * 在持久化模型中标注不需要持久化的字段
  * @author: chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

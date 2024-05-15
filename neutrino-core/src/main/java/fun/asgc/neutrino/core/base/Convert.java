@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 转换器
  * @author: chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 public interface Convert<S,T> {
 

@@ -7,7 +7,7 @@ import fun.asgc.neutrino.core.util.StringUtil;
 /**
  *
  * @author: chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 public class DefaultTableNameConvert implements Convert<String, String> {
     private static final DefaultTableNameConvert instance = new DefaultTableNameConvert();

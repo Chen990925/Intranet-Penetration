@@ -4,7 +4,7 @@ package fun.asgc.neutrino.core.aop.interceptor;
 /**
  * 异常处理器
  * @author: chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 public interface ExceptionHandler {
 

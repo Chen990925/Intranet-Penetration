@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  *    });
  * 3、dbcTemplate.query(User.class,"select * from user where id = :id", new User().setId("1"));
  * @author: chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 public class SqlAndParams {
     private String sql;
@@ -29,6 +29,10 @@ public class SqlAndParams {
     public SqlAndParams(String sql, Object[] paramArray) {
         this.sql = sql;
         this.paramArray = paramArray;
+    }
+
+    public SqlAndParams(String sql) {
+        this.sql = sql;
     }
 
     public SqlAndParams(String sql,Map<String,Object> paramMap) {
@@ -58,6 +62,9 @@ public class SqlAndParams {
     }
 
     private void initParams() {
+        if (null == paramMap) {
+            paramMap = new HashMap<>();
+        }
         List<Orderly> orderlyList = new ArrayList<>();
         for(String key : paramMap.keySet()){
             int index = sql.indexOf(":" + key);
@@ -76,5 +83,15 @@ public class SqlAndParams {
 
     public String getSql(){
         return sql;
+    }
+
+    @Override
+    public String toString() {
+        return "SqlAndParams{" +
+                "sql='" + sql + '\'' +
+                ", paramArray=" + Arrays.toString(paramArray) +
+                ", paramMap=" + paramMap +
+                ", paramObject=" + paramObject +
+                '}';
     }
 }

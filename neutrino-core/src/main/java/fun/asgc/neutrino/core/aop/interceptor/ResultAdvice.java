@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 /**
  * 结果处理
  * @author:  chenjunlin
- * @date: 2022/6/27
+ * @date: 2024/5/15
  */
 public interface ResultAdvice {
 
