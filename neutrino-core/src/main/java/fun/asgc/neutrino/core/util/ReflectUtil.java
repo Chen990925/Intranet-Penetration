@@ -77,27 +77,27 @@ public class ReflectUtil {
 	 */
 	public static Set<Field> getInheritChainDeclaredFieldSet(Class<?> clazz, Set<Class<?>> ignoreClasses) {
 		return kvProcess(inheritChainDeclaredFieldSetCache,
-			clazz,
-			(Class<?> c) -> {
-				Set<String> nameSet = new HashSet<>();
-				Set<Field> set = new HashSet<>();
-				Set<Class<?>> ignores = null == ignoreClasses ? new HashSet<>() : ignoreClasses;
-				while (null != c && !ignores.contains(c)) {
-					Set<Field> fields = getDeclaredFields(c);
-					if (CollectionUtil.notEmpty(fields)) {
-						for (Field field : fields) {
-							if (field.getName().equals("this$0") || nameSet.contains(field.getName())) {
-								continue;
+				clazz,
+				(Class<?> c) -> {
+					Set<String> nameSet = new HashSet<>();
+					Set<Field> set = new HashSet<>();
+					Set<Class<?>> ignores = null == ignoreClasses ? new HashSet<>() : ignoreClasses;
+					while (null != c && !ignores.contains(c)) {
+						Set<Field> fields = getDeclaredFields(c);
+						if (CollectionUtil.notEmpty(fields)) {
+							for (Field field : fields) {
+								if (field.getName().equals("this$0") || nameSet.contains(field.getName())) {
+									continue;
+								}
+								nameSet.add(field.getName());
+								set.add(field);
 							}
-							nameSet.add(field.getName());
-							set.add(field);
 						}
-					}
 
-					c = c.getSuperclass();
+						c = c.getSuperclass();
+					}
+					return set;
 				}
-				return set;
-			}
 		);
 	}
 
@@ -211,8 +211,8 @@ public class ReflectUtil {
 		return kvProcess(setMethodCache, field, f -> {
 			String setMethodName = getSetMethodName(field);
 			Optional<Method> methodOptional = getMethods(field.getDeclaringClass()).stream()
-				.filter(method -> method.getName().equals(setMethodName) && method.getParameters().length == 1 && method.getParameterTypes()[0] == field.getType())
-				.findFirst();
+					.filter(method -> method.getName().equals(setMethodName) && method.getParameters().length == 1 && method.getParameterTypes()[0] == field.getType())
+					.findFirst();
 			if (methodOptional.isPresent()) {
 				return methodOptional.get();
 			}
@@ -265,6 +265,26 @@ public class ReflectUtil {
 
 	/**
 	 * 设置字段的值
+	 * @param fieldList
+	 * @param obj
+	 * @param value
+	 * @return
+	 */
+	public static boolean setFieldValue(List<Field> fieldList, Object obj, Object value) {
+		if (CollectionUtil.isEmpty(fieldList)) {
+			return false;
+		}
+		boolean result = true;
+		for (Field field : fieldList) {
+			if (!setFieldValue(field, obj, value)) {
+				result = false;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 设置字段的值
 	 * 先尝试通过set方法设置，若设置失败则通过字段直接设置
 	 * @param field
 	 * @param obj
@@ -280,6 +300,26 @@ public class ReflectUtil {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	/**
+	 * 获取字段的值
+	 * @param field
+	 * @param obj
+	 * @return
+	 */
+	public static Object getFieldValue(Field field, Object obj) {
+		Assert.notNull(field, "field不能为空");
+		Assert.notNull(obj, "对象不能为空");
+		try {
+			if (!field.isAccessible()) {
+				field.setAccessible(true);
+			}
+			return field.get(obj);
+		} catch (Exception e) {
+			// ignore
+		}
+		return null;
 	}
 
 	/**
