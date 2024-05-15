@@ -1,15 +1,20 @@
 
 package fun.asgc.neutrino.core.aop;
 
+import fun.asgc.neutrino.core.aop.interceptor.Interceptor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  *
- * @author: wen.y
+ * @author:  chenjunlin
  * @date: 2022/6/24
  */
 @Slf4j
 public class TestInterceptor2 implements Interceptor {
+
+    public TestInterceptor2() {
+        System.out.println("拦截器2实例化");
+    }
 
     @Override
     public void intercept(Invocation inv) {

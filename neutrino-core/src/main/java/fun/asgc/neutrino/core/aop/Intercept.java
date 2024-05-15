@@ -1,6 +1,8 @@
  
 package fun.asgc.neutrino.core.aop;
 
+import fun.asgc.neutrino.core.aop.interceptor.Interceptor;
+
 import java.lang.annotation.*;
 
 /**
@@ -13,5 +15,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Intercept {
-	Class<? extends Interceptor>[] value();
+	Class<? extends Interceptor>[] value() default {};
+	Class<? extends Interceptor>[] exclude() default {};
 }

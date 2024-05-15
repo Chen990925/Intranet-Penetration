@@ -1,5 +1,7 @@
 
-package fun.asgc.neutrino.core.aop;
+package fun.asgc.neutrino.core.aop.interceptor;
+
+import fun.asgc.neutrino.core.aop.Invocation;
 
 /**
  * @author: chenjunlin
